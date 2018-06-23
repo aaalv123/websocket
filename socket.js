@@ -1,4 +1,6 @@
-var socket = (function(){
+;(function(){
+    'use strict';
+
     var messageCallback;
     var webSocket;
     function rigist(url,callback){
@@ -98,7 +100,7 @@ var socket = (function(){
         var bufferlength = reciveView.getUint16(0) - 4; // 减4 是减掉code的长度
         var tempArr = []; //要生成的字符串数组
         var pointer = 6; //指针
-        var start = end = 0; //起始位置 结束位置
+        var start = 0, end = 0; //起始位置 结束位置
         while(bufferlength > 0){
             var currentDataLength = reciveView.getUint16(pointer);
             start = pointer + 2; // +2  加记录数据长度的字节数 即Uint16
@@ -162,10 +164,13 @@ var socket = (function(){
         }
         return str;
     }
-    return {
+    // 定义对外接口
+    var socket = {
         rigist : rigist,
         send : send
     }
+    var _globals = (function(){ return this || (1,eval)("this"); }());
+    !('socket' in _globals) && (_globals.socket = socket); 
 })();
 // 使用
 // socket.rigist('ws://192.168.1.51:9025',function(data){
